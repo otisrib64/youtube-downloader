@@ -2,7 +2,10 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 import threading
 import yt_dlp
+import imageio_ffmpeg
 import os
+
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 
 class YTDownloader(tk.Tk):
@@ -86,7 +89,7 @@ class YTDownloader(tk.Tk):
     def _format_opts(self):
         fmt = self._fmt_var.get()
         out_tmpl = os.path.join(self._dir_var.get(), "%(title)s.%(ext)s")
-        base = {"outtmpl": out_tmpl, "progress_hooks": [self._on_progress]}
+        base = {"outtmpl": out_tmpl, "progress_hooks": [self._on_progress], "ffmpeg_location": FFMPEG_PATH}
 
         if fmt == "Apenas áudio (MP3)":
             return {**base, "format": "bestaudio/best",
