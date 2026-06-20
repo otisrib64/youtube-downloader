@@ -104,6 +104,15 @@ class YTDownloader(tk.Tk):
         ttk.Combobox(fmt_frame, textvariable=self._fmt_var, values=formats,
                      state="readonly", width=40).pack(anchor="w", pady=(4, 0))
 
+        # Cookie browser selector
+        cookie_frame = tk.Frame(self, bg="#1a1a2e")
+        cookie_frame.pack(fill="x", **pad)
+        ttk.Label(cookie_frame, text="Cookies do navegador (use se o YouTube bloquear):").pack(anchor="w")
+        self._browser_var = tk.StringVar(value="Nenhum")
+        browsers = ["Nenhum", "Chrome", "Firefox", "Edge", "Brave"]
+        ttk.Combobox(cookie_frame, textvariable=self._browser_var, values=browsers,
+                     state="readonly", width=20).pack(anchor="w", pady=(4, 0))
+
         # Progress
         self._progress = ttk.Progressbar(self, mode="indeterminate", length=588)
         self._progress.pack(pady=(10, 0))
@@ -159,6 +168,10 @@ class YTDownloader(tk.Tk):
             "progress_hooks": [self._on_progress],
             "ffmpeg_location": FFMPEG_PATH,
         }
+
+        browser = self._browser_var.get().lower()
+        if browser != "nenhum":
+            base["cookiesfrombrowser"] = (browser, None, None, None)
         if fmt == "Apenas áudio (MP3)":
             return {**base, "format": "bestaudio/best",
                     "postprocessors": [{"key": "FFmpegExtractAudio", "preferredcodec": "mp3"}]}
